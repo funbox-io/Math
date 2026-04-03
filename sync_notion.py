@@ -77,8 +77,8 @@ def build_json(rows):
         name = get_prop(p, "Name", "title")
         ktype = get_prop(p, "Type", "select").lower()
         unit = get_prop(p, "Unit", "select")
-        mistakes = int(get_prop(p, "Mistakes", "number"))
-        correct = int(get_prop(p, "Correct", "number"))
+        mistakes = int(get_prop(p, "# Mistakes", "number"))
+        correct = int(get_prop(p, "# Correct", "number"))
         weight = int(get_prop(p, "Weight", "number")) or 3
         color = get_prop(p, "Color", "rich_text") or DEFAULT_COLORS.get(ktype, "#aaa")
         link = get_prop(p, "Link", "select") or "problems"
