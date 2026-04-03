@@ -4,7 +4,7 @@
     "score": 0,
     "total": 0,
     "correct": 0,
-    "updatedAt": "2026-04-04T03:24:58.293130+09:00"
+    "updatedAt": "2026-04-04T04:42:25.430178+09:00"
   },
   "notionLinks": {
     "mainPage": "https://www.notion.so/YOUR_MAIN_PAGE_ID",
@@ -12,5 +12,36 @@
     "weakness": "https://www.notion.so/YOUR_WEAKNESS_PAGE_ID",
     "dataMining": "https://www.notion.so/YOUR_DATAMINING_PAGE_ID"
   },
-  "keywords": []
+  "keywords": [
+    {
+      "t": "통분",
+      "type": "strong",
+      "w": 3,
+      "c": "#2ed573",
+      "link": "problems",
+      "unit": "분수",
+      "tip": "#2ed573",
+      "correct": 0
+    },
+    {
+      "t": "최소공배수 ",
+      "type": "weak",
+      "w": 3,
+      "c": "#ff2d55",
+      "link": "weakness",
+      "unit": "소인수분해",
+      "tip": "",
+      "mistakes": 0
+    },
+    {
+      "t": "최대공약수",
+      "type": "weak",
+      "w": 4,
+      "c": "#ff2d55",
+      "link": "weakness",
+      "unit": "소인수분해",
+      "tip": "",
+      "mistakes": 0
+    }
+  ]
 }
