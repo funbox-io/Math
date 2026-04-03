@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "title": "수학 키워드 데이터 마이닝",
+    "score": 60,
+    "total": 20,
+    "correct": 12,
+    "updatedAt": "2026-04-03T12:00:00+09:00"
+  },
+  "notionLinks": {
+    "mainPage":  "https://www.notion.so/2ffa79df73cf80aeb13af43ad18db636",
+    "problems":  "https://www.notion.so/335a79df73cf81c79ddcdfa7f6517d59",
+    "weakness":  "https://www.notion.so/335a79df73cf810898e6d126c3908dfd",
+    "dataMining":"https://www.notion.so/336a79df73cf8126872ecd82665192c4"
+  },
+  "keywords": [
+    {"t":"최소공배수", "type":"weak",   "w":5, "c":"#ff2d55", "link":"weakness", "unit":"소인수분해",  "mistakes":3, "tip":"소인수분해 후 최고 지수 곱"},
+    {"t":"최대공약수", "type":"weak",   "w":4, "c":"#ff6b35", "link":"weakness", "unit":"소인수분해",  "mistakes":2, "tip":"공통 소인수의 최소 지수 곱"},
+    {"t":"음수 뺄셈",  "type":"weak",   "w":5, "c":"#ff2d55", "link":"weakness", "unit":"정수와유리수", "mistakes":3, "tip":"부호를 바꾸고 덧셈으로 변환"},
+    {"t":"절댓값",     "type":"weak",   "w":3, "c":"#ff9f0a", "link":"weakness", "unit":"정수와유리수", "mistakes":2, "tip":"수직선에서 원점까지의 거리"},
+    {"t":"유리수 대소","type":"weak",   "w":4, "c":"#ff6b35", "link":"weakness", "unit":"정수와유리수", "mistakes":2, "tip":"통분 후 분자를 비교"},
+    {"t":"거듭제곱",   "type":"weak",   "w":3, "c":"#ff9f0a", "link":"weakness", "unit":"소인수분해",  "mistakes":1, "tip":"밑과 지수의 개념 구분"},
+    {"t":"역수",       "type":"weak",   "w":3, "c":"#ff9f0a", "link":"weakness", "unit":"정수와유리수", "mistakes":1, "tip":"분자와 분모를 뒤집기"},
+    {"t":"소수 판별",  "type":"strong", "w":5, "c":"#2ed573", "link":"problems", "unit":"소인수분해",  "correct":3,  "tip":"1과 자기자신만을 약수로 가짐"},
+    {"t":"소인수분해", "type":"strong", "w":5, "c":"#2ed573", "link":"problems", "unit":"소인수분해",  "correct":3,  "tip":"소수의 곱으로 표현하기"},
+    {"t":"지수 표현",  "type":"strong", "w":4, "c":"#1e90ff", "link":"problems", "unit":"소인수분해",  "correct":2,  "tip":"거듭제곱 표현 능숙"},
+    {"t":"정수 덧셈",  "type":"strong", "w":4, "c":"#2ed573", "link":"problems", "unit":"정수와유리수", "correct":2,  "tip":"부호 규칙 정확히 적용"},
+    {"t":"양수 곱셈",  "type":"strong", "w":3, "c":"#1e90ff", "link":"problems", "unit":"정수와유리수", "correct":2,  "tip":"기본 곱셈 계산 정확"},
+    {"t":"수직선",     "type":"strong", "w":3, "c":"#ffd60a", "link":"problems", "unit":"정수와유리수", "correct":1,  "tip":"정수 위치 표현 능숙"},
+    {"t":"약수 구하기","type":"strong", "w":4, "c":"#2ed573", "link":"problems", "unit":"소인수분해",  "correct":2,  "tip":"약수 목록 정확히 나열"}
+  ]
+}
