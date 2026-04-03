@@ -38,6 +38,11 @@ def get_prop(props, key, kind):
         return p.get("number") or 0
     if kind == "rich_text":
         return "".join(t["plain_text"] for t in p.get("rich_text", []))
+    if kind == "multi_select":
+                        items = p.get("multi_select", [])
+                return ", ".join(i["name"] for i in items) if items else ""
+    if kind == "status":
+                return (p.get("status") or {}).get("name", "")
     return ""
 
 
@@ -86,15 +91,19 @@ def build_json(rows):
             for k, v in p.items():
                 print(f"  '{k}' : {v.get('type', '?')}")
 
-        name = get_prop(p, "Name", "title")
-        ktype = get_prop(p, "Type", "select").lower()
-        unit = get_prop(p, "Unit", "select")
-        mistakes = int(get_prop(p, "Mistakes", "number"))
-        correct = int(get_prop(p, "Correct", "number"))
-        weight = int(get_prop(p, "Weight", "number")) or 3
-        color = get_prop(p, "Color", "rich_text") or DEFAULT_COLORS.get(ktype, "#aaa")
-        link = get_prop(p, "Link", "select") or "problems"
-        tip = get_prop(p, "Tip", "rich_text")
+        name = get_prop(p, "문제집", "title")
+                score_val = int(get_prop(p, "점수", "number"))
+                level = get_prop(p, "수준", "rich_text")
+                keyword_text = get_prop(p, "키워드", "rich_text")
+                importance = get_prop(p, "중요도", "multi_select")
+                ktype = "weak" if score_val < 60 else "strong"
+                unit = importance if importance else "기타"
+                mistakes = max(1, (100 - score_val) // 20) if ktype == "weak" else 0
+                correct = score_val // 20 if ktype == "strong" else 0
+                weight = 5 if score_val < 40 else (3 if ktype == "weak" else 2)
+                color = DEFAULT_COLORS.get(ktype, "#aaa")
+                link = "weakness" if ktype == "weak" else "problems"
+                tip = keyword_text if keyword_text else f"점수: {score_val}"
 
         if not name:
             continue
