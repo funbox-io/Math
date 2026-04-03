@@ -4,7 +4,7 @@
     "score": 0,
     "total": 0,
     "correct": 0,
-    "updatedAt": "2026-04-04T04:42:25.430178+09:00"
+    "updatedAt": "2026-04-04T05:23:18.426136+09:00"
   },
   "notionLinks": {
     "mainPage": "https://www.notion.so/YOUR_MAIN_PAGE_ID",
@@ -13,6 +13,26 @@
     "dataMining": "https://www.notion.so/YOUR_DATAMINING_PAGE_ID"
   },
   "keywords": [
+    {
+      "t": "음수 뺄셈",
+      "type": "weak",
+      "w": 3,
+      "c": "#ffcc00",
+      "link": "weakness",
+      "unit": "정수",
+      "tip": "부호 조심",
+      "mistakes": 0
+    },
+    {
+      "t": "절댓값",
+      "type": "weak",
+      "w": 3,
+      "c": "#ffcc00",
+      "link": "weakness",
+      "unit": "정수",
+      "tip": "양의 거리",
+      "mistakes": 0
+    },
     {
       "t": "통분",
       "type": "strong",
@@ -30,7 +50,27 @@
       "c": "#ff2d55",
       "link": "weakness",
       "unit": "소인수분해",
-      "tip": "",
+      "tip": "공통된 배수를 찾는 것이 핵심",
+      "mistakes": 0
+    },
+    {
+      "t": "정수 사칙연산",
+      "type": "strong",
+      "w": 4,
+      "c": "#2ed573",
+      "link": "problems",
+      "unit": "정수",
+      "tip": "#2ed573",
+      "correct": 0
+    },
+    {
+      "t": "소인수분해",
+      "type": "weak",
+      "w": 2,
+      "c": "#ffcc00",
+      "link": "weakness",
+      "unit": "소인수분해",
+      "tip": "weak",
       "mistakes": 0
     },
     {
@@ -38,6 +78,16 @@
       "type": "weak",
       "w": 4,
       "c": "#ff2d55",
+      "link": "weakness",
+      "unit": "소인수분해",
+      "tip": "공통된 약수를 찾는 것이 핵심",
+      "mistakes": 0
+    },
+    {
+      "t": "소인과 합성수",
+      "type": "weak",
+      "w": 3,
+      "c": "#ffcc00",
       "link": "weakness",
       "unit": "소인수분해",
       "tip": "",
