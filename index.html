@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>수학 키워드</title>
+<title>📊 수학 키워드 데이터 마이닝</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
@@ -14,13 +14,40 @@ body {
   height: 100vh;
   display: flex;
 }
+
+/* ── 로딩 오버레이 ── */
+#loading-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  background: #0a0a1a;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+  transition: opacity 0.6s ease;
+}
+#loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loading-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid rgba(168,85,247,0.2);
+  border-top-color: #a855f7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#loading-overlay p { font-size: 13px; color: #666; }
+
+/* ── 업데이트 배지 ── */
+#update-badge {
+  position: absolute; top: 20px; right: 16px;
+  z-index: 10; font-size: 10px; color: #555;
+  background: rgba(255,255,255,0.04);
+  padding: 4px 10px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
 #sphere-panel {
-  flex: 1;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  flex: 1; position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
 }
 #starfield { position: absolute; top:0; left:0; width:100%; height:100%; z-index:0; }
 #sphere-canvas { position: relative; z-index: 1; cursor: grab; }
@@ -98,7 +125,7 @@ body {
 .freq-bar-bg { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
 .freq-bar-fill { height: 6px; border-radius: 3px; transition: width 1.5s ease; }
 #donut-canvas { display: block; margin: 0 auto; }
-.donut-legend { display: flex; justify-content: center; gap: 16px; margin-top: 10px; font-size: 11px; }
+.donut-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; font-size: 11px; }
 .priority-item {
   display: flex; align-items: flex-start; gap: 10px;
   margin-bottom: 8px; padding: 10px;
@@ -114,10 +141,16 @@ body {
 </head>
 <body>
 
+<!-- 로딩 오버레이 -->
+<div id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <p>데이터 불러오는 중…</p>
+</div>
+
 <div id="sphere-panel">
   <canvas id="starfield"></canvas>
   <div id="sphere-title">
-    <h1>수학 키워드</h1>
+    <h1 id="page-title">📊 수학 키워드 데이터 마이닝</h1>
     <p>클릭 → 관련 문제 페이지 이동 &nbsp;·&nbsp; 드래그 → 회전 &nbsp;·&nbsp; 스크롤 → 확대/축소</p>
   </div>
   <canvas id="sphere-canvas" width="640" height="520"></canvas>
@@ -126,22 +159,23 @@ body {
     <div class="legend-item"><div class="dot" style="background:#2ed573"></div><span>강점 키워드</span></div>
     <div class="legend-item"><div class="dot" style="background:#ffd60a"></div><span>연습 중</span></div>
   </div>
+  <div id="update-badge">⏱ 로딩 중…</div>
 </div>
 
 <div id="mining-panel">
   <div class="panel-section">
     <h3>📈 현재 성적</h3>
-    <div class="score-num">60<span style="font-size:18px;color:#888">점</span></div>
-    <div class="score-sub">20문제 중 12문제 정답</div>
+    <div class="score-num"><span id="score-val">—</span><span style="font-size:18px;color:#888">점</span></div>
+    <div class="score-sub" id="score-sub">데이터 로딩 중</div>
     <div class="bar-bg"><div class="bar-fill" id="score-fill"></div></div>
   </div>
   <div class="panel-section">
     <h3>📊 통계</h3>
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num" style="color:#ff2d55">7</div><div class="stat-label">취약 키워드</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#2ed573">7</div><div class="stat-label">강점 키워드</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#fff">20</div><div class="stat-label">총 문제 수</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#a855f7">2</div><div class="stat-label">학습 단원</div></div>
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-num" style="color:#555">—</div><div class="stat-label">취약 키워드</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#555">—</div><div class="stat-label">강점 키워드</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#555">—</div><div class="stat-label">총 문제 수</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#555">—</div><div class="stat-label">학습 단원</div></div>
     </div>
   </div>
   <div class="panel-section">
@@ -151,10 +185,7 @@ body {
   <div class="panel-section">
     <h3>🍩 단원별 분포</h3>
     <canvas id="donut-canvas" width="180" height="180"></canvas>
-    <div class="donut-legend">
-      <div class="legend-item"><div class="dot" style="background:#a855f7"></div><span>소인수분해 57%</span></div>
-      <div class="legend-item"><div class="dot" style="background:#06b6d4"></div><span>정수와 유리수 43%</span></div>
-    </div>
+    <div class="donut-legend" id="donut-legend"></div>
   </div>
   <div class="panel-section">
     <h3>🎯 우선 학습 키워드</h3>
@@ -165,29 +196,152 @@ body {
 <div id="tooltip"></div>
 
 <script>
-const NOTION = {
-  mainPage:  'https://www.notion.so/2ffa79df73cf80aeb13af43ad18db636',
-  problems:  'https://www.notion.so/335a79df73cf81c79ddcdfa7f6517d59',
-  weakness:  'https://www.notion.so/335a79df73cf810898e6d126c3908dfd',
-  dataMining:'https://www.notion.so/336a79df73cf8126872ecd82665192c4',
-};
+// ══════════════════════════════════════════════════════════
+//  데이터 소스 설정
+//  ▶ 아래 DATA_URL만 바꾸면 어디서든 데이터를 가져올 수 있습니다.
+//
+//  [옵션 1] 같은 GitHub 레포의 data.json (기본값)
+const DATA_URL = './data.json';
+//
+//  [옵션 2] Google Sheets (시트를 "링크 있는 사용자" 공개 후 사용)
+//  const DATA_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+//
+//  [옵션 3] 외부 JSON 서버 / n8n webhook
+//  const DATA_URL = 'https://your-n8n.com/webhook/math-data';
+// ══════════════════════════════════════════════════════════
 
-const KEYWORDS = [
-  {t:'최소공배수', type:'weak',   w:5, c:'#ff2d55', url:NOTION.weakness, unit:'소인수분해',  mistakes:3, tip:'소인수분해 후 최고 지수 곱'},
-  {t:'최대공약수', type:'weak',   w:4, c:'#ff6b35', url:NOTION.weakness, unit:'소인수분해',  mistakes:2, tip:'공통 소인수의 최소 지수 곱'},
-  {t:'음수 뺄셈',  type:'weak',   w:5, c:'#ff2d55', url:NOTION.weakness, unit:'정수와유리수', mistakes:3, tip:'부호를 바꾸고 덧셈으로 변환'},
-  {t:'절댓값',    type:'weak',   w:3, c:'#ff9f0a', url:NOTION.weakness, unit:'정수와유리수', mistakes:2, tip:'수직선에서 원점까지의 거리'},
-  {t:'유리수 대소',type:'weak',   w:4, c:'#ff6b35', url:NOTION.weakness, unit:'정수와유리수', mistakes:2, tip:'통분 후 분자를 비교'},
-  {t:'거듭제곱',  type:'weak',   w:3, c:'#ff9f0a', url:NOTION.weakness, unit:'소인수분해',  mistakes:1, tip:'밑과 지수의 개념 구분'},
-  {t:'역수',     type:'weak',   w:3, c:'#ff9f0a', url:NOTION.weakness, unit:'정수와유리수', mistakes:1, tip:'분자와 분모를 뒤집기'},
-  {t:'소수 판별', type:'strong', w:5, c:'#2ed573', url:NOTION.problems, unit:'소인수분해',  correct:3, tip:'1과 자기자신만을 약수로 가짐'},
-  {t:'소인수분해', type:'strong', w:5, c:'#2ed573', url:NOTION.problems, unit:'소인수분해',  correct:3, tip:'소수의 곱으로 표현하기'},
-  {t:'지수 표현', type:'strong', w:4, c:'#1e90ff', url:NOTION.problems, unit:'소인수분해',  correct:2, tip:'거듭제곱 표현 능숙'},
-  {t:'정수 덧셈', type:'strong', w:4, c:'#2ed573', url:NOTION.problems, unit:'정수와유리수', correct:2, tip:'부호 규칙 정확히 적용'},
-  {t:'양수 곱셈', type:'strong', w:3, c:'#1e90ff', url:NOTION.problems, unit:'정수와유리수', correct:2, tip:'기본 곱셈 계산 정확'},
-  {t:'수직선',   type:'strong', w:3, c:'#ffd60a', url:NOTION.problems, unit:'정수와유리수', correct:1, tip:'정수 위치 표현 능숙'},
-  {t:'약수 구하기',type:'strong', w:4, c:'#2ed573', url:NOTION.problems, unit:'소인수분해',  correct:2, tip:'약수 목록 정확히 나열'},
-];
+let KEYWORDS = [];
+let NOTION   = {};
+
+async function loadData() {
+  try {
+    const res = await fetch(DATA_URL + '?t=' + Date.now()); // 캐시 방지
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    NOTION   = data.notionLinks;
+    KEYWORDS = data.keywords.map(k => ({
+      ...k,
+      url: NOTION[k.link] || NOTION.problems
+    }));
+
+    renderAll(data);
+    document.getElementById('update-badge').textContent =
+      '🔄 ' + new Date(data.meta.updatedAt).toLocaleDateString('ko-KR', {
+        month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'
+      }) + ' 업데이트';
+
+  } catch (err) {
+    console.error('데이터 로드 실패:', err);
+    document.querySelector('#loading-overlay p').textContent =
+      '⚠️ data.json 로드 실패. 콘솔을 확인하세요.';
+    return;
+  }
+
+  // 로딩 완료
+  document.getElementById('loading-overlay').classList.add('hidden');
+
+  // 구 시작
+  initStars(); drawStars();
+  initSphere();
+}
+
+// ─── 렌더 함수들 ────────────────────────────────────────────
+function renderAll(data) {
+  const { meta } = data;
+  const weakKWs   = KEYWORDS.filter(k => k.type === 'weak');
+  const strongKWs = KEYWORDS.filter(k => k.type === 'strong');
+  const units = [...new Set(KEYWORDS.map(k => k.unit))];
+
+  // 성적
+  document.getElementById('score-val').textContent = meta.score;
+  document.getElementById('score-sub').textContent =
+    `${meta.total}문제 중 ${meta.correct}문제 정답`;
+  setTimeout(() => {
+    document.getElementById('score-fill').style.width = meta.score + '%';
+  }, 300);
+
+  // 통계 카드
+  const colors = ['#ff2d55','#2ed573','#fff','#a855f7'];
+  const vals   = [weakKWs.length, strongKWs.length, meta.total, units.length];
+  const labels = ['취약 키워드','강점 키워드','총 문제 수','학습 단원'];
+  document.getElementById('stats-grid').innerHTML = vals.map((v,i) => `
+    <div class="stat-card">
+      <div class="stat-num" style="color:${colors[i]}">${v}</div>
+      <div class="stat-label">${labels[i]}</div>
+    </div>`).join('');
+
+  // 오답 빈도 차트
+  const sorted = [...weakKWs].sort((a,b) => b.mistakes - a.mistakes);
+  const maxM   = sorted[0]?.mistakes || 1;
+  document.getElementById('freq-chart').innerHTML = sorted.map(k => {
+    const pct = (k.mistakes / maxM) * 100;
+    const clr = k.mistakes >= 3 ? '#ff2d55' : k.mistakes === 2 ? '#ff6b35' : '#ff9f0a';
+    return `
+      <div class="freq-item">
+        <div class="freq-label"><span>${k.t}</span><span style="color:${clr}">${k.mistakes}회</span></div>
+        <div class="freq-bar-bg">
+          <div class="freq-bar-fill" style="width:0%;background:${clr}" data-w="${pct}"></div>
+        </div>
+      </div>`;
+  }).join('');
+  setTimeout(() => {
+    document.querySelectorAll('.freq-bar-fill').forEach(el => {
+      el.style.width = el.dataset.w + '%';
+    });
+  }, 400);
+
+  // 도넛 차트 (단원별 동적 계산)
+  const unitColors = ['#a855f7','#06b6d4','#f59e0b','#2ed573','#ff6b35'];
+  const unitCounts = {};
+  KEYWORDS.forEach(k => { unitCounts[k.unit] = (unitCounts[k.unit]||0) + 1; });
+  const total = KEYWORDS.length;
+  const donutData = Object.entries(unitCounts).map(([name, count], i) => ({
+    name, v: count / total, c: unitColors[i % unitColors.length]
+  }));
+
+  const dc  = document.getElementById('donut-canvas').getContext('2d');
+  let da = -Math.PI / 2;
+  donutData.forEach(d => {
+    const end = da + d.v * Math.PI * 2;
+    dc.beginPath();
+    dc.arc(90, 90, 72, da, end);
+    dc.arc(90, 90, 48, end, da, true);
+    dc.closePath(); dc.fillStyle = d.c; dc.fill();
+    da = end;
+  });
+  dc.font = 'bold 20px Segoe UI'; dc.fillStyle = '#fff';
+  dc.textAlign = 'center'; dc.textBaseline = 'middle';
+  dc.fillText(units.length, 90, 84);
+  dc.font = '11px Segoe UI'; dc.fillStyle = '#888';
+  dc.fillText('단원', 90, 104);
+
+  document.getElementById('donut-legend').innerHTML = donutData.map(d =>
+    `<div class="legend-item">
+      <div class="dot" style="background:${d.c}"></div>
+      <span>${d.name} ${Math.round(d.v*100)}%</span>
+    </div>`
+  ).join('');
+
+  // 우선 학습 목록
+  const top3     = sorted.slice(0, 3);
+  const rankClrs = ['#ff2d55','#ff6b35','#ff9f0a'];
+  const pl = document.getElementById('priority-list');
+  pl.innerHTML = '';
+  top3.forEach((k, i) => {
+    const div = document.createElement('div');
+    div.className = 'priority-item';
+    div.style.borderColor = rankClrs[i];
+    div.innerHTML = `
+      <div class="priority-rank" style="color:${rankClrs[i]}">${i+1}</div>
+      <div class="priority-info">
+        <h4>${k.t}</h4>
+        <p>오답 ${k.mistakes}회 &middot; ${k.unit} &middot; ${k.tip}</p>
+      </div>`;
+    div.addEventListener('click', () => window.open(k.url, '_blank'));
+    pl.appendChild(div);
+  });
+}
 
 // ─── 별빛 배경 ────────────────────────────────────────────────
 const sCanvas = document.getElementById('starfield');
@@ -220,225 +374,153 @@ function drawStars() {
   requestAnimationFrame(drawStars);
 }
 window.addEventListener('resize', initStars);
-initStars();
-drawStars();
 
 // ─── 3D 구 태그 클라우드 ─────────────────────────────────────
-const canvas = document.getElementById('sphere-canvas');
-const ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
-const CX = W / 2, CY = H / 2;
-const RADIUS = 195;
+function initSphere() {
+  const canvas = document.getElementById('sphere-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const CX = W / 2, CY = H / 2;
+  const RADIUS = 195;
 
-let rotX = 0.25, angleY = 0;
-const autoSpeed = 0.005;
-let dragging = false, lastMX = 0, lastMY = 0;
-let paused = false, hoverIdx = -1;
-let zoom = 1.0;
+  let rotX = 0.25, angleY = 0;
+  const autoSpeed = 0.005;
+  let dragging = false, lastMX = 0, lastMY = 0;
+  let paused = false, hoverIdx = -1;
+  let zoom = 1.0;
 
-// Fibonacci 구면 분포
-function fibSphere(n) {
-  const pts = [], phi = Math.PI * (3 - Math.sqrt(5));
-  for (let i = 0; i < n; i++) {
-    const y = 1 - (i / (n - 1)) * 2;
-    const r = Math.sqrt(1 - y * y);
-    const th = phi * i;
-    pts.push([Math.cos(th) * r, y, Math.sin(th) * r]);
+  function fibSphere(n) {
+    const pts = [], phi = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < n; i++) {
+      const y = 1 - (i / (n - 1)) * 2;
+      const r = Math.sqrt(1 - y * y);
+      const th = phi * i;
+      pts.push([Math.cos(th) * r, y, Math.sin(th) * r]);
+    }
+    return pts;
   }
-  return pts;
-}
-const basePos = fibSphere(KEYWORDS.length);
+  const basePos = fibSphere(KEYWORDS.length);
 
-function rotY(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0]*c+p[2]*s, p[1], -p[0]*s+p[2]*c]; }
-function rotX2(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0], p[1]*c-p[2]*s, p[1]*s+p[2]*c]; }
+  function rotY(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0]*c+p[2]*s, p[1], -p[0]*s+p[2]*c]; }
+  function rotX2(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0], p[1]*c-p[2]*s, p[1]*s+p[2]*c]; }
+  function project(p) {
+    const fov = 520 * zoom;
+    const z = p[2] * RADIUS;
+    const d = fov / (fov + z + RADIUS * 1.2);
+    return { x: CX + p[0]*RADIUS*d, y: CY - p[1]*RADIUS*d, z: p[2], d };
+  }
 
-function project(p) {
-  const fov = 520 * zoom;
-  const z = p[2] * RADIUS;
-  const d = fov / (fov + z + RADIUS * 1.2);
-  return { x: CX + p[0]*RADIUS*d, y: CY - p[1]*RADIUS*d, z: p[2], d };
-}
+  let _pts = [];
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    const grd = ctx.createRadialGradient(CX,CY,20, CX,CY,RADIUS);
+    grd.addColorStop(0,'rgba(168,85,247,0.10)');
+    grd.addColorStop(1,'rgba(168,85,247,0)');
+    ctx.beginPath(); ctx.arc(CX,CY,RADIUS,0,Math.PI*2);
+    ctx.fillStyle = grd; ctx.fill();
 
-let _pts = [];
-function frame() {
-  ctx.clearRect(0, 0, W, H);
+    if (!paused) { angleY += autoSpeed; }
 
-  // 구 글로우
-  const grd = ctx.createRadialGradient(CX,CY,20, CX,CY,RADIUS);
-  grd.addColorStop(0,'rgba(168,85,247,0.10)');
-  grd.addColorStop(1,'rgba(168,85,247,0)');
-  ctx.beginPath(); ctx.arc(CX,CY,RADIUS,0,Math.PI*2);
-  ctx.fillStyle = grd; ctx.fill();
+    _pts = basePos.map(p => {
+      let q = rotY(p, angleY);
+      q = rotX2(q, rotX);
+      return project(q);
+    });
 
-  if (!paused) { angleY += autoSpeed; }
+    const order = KEYWORDS.map((_,i)=>i).sort((a,b) => _pts[a].z - _pts[b].z);
 
-  _pts = basePos.map(p => {
-    let q = rotY(p, angleY);
-    q = rotX2(q, rotX);
-    return project(q);
-  });
-
-  // z-order sort
-  const order = KEYWORDS.map((_,i)=>i).sort((a,b) => _pts[a].z - _pts[b].z);
-
-  // 연결선
-  ctx.lineWidth = 0.3;
-  for (let i = 0; i < order.length; i++) {
-    for (let j = i + 1; j < order.length; j++) {
-      const pa = _pts[order[i]], pb = _pts[order[j]];
-      const dist = Math.hypot(pa.x-pb.x, pa.y-pb.y);
-      if (dist < 120) {
-        const va = (pa.z+1)/2, vb = (pb.z+1)/2;
-        const alpha = (1-dist/120) * 0.15 * va * vb;
-        ctx.strokeStyle = `rgba(200,200,255,${alpha})`;
-        ctx.beginPath(); ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();
+    ctx.lineWidth = 0.3;
+    for (let i = 0; i < order.length; i++) {
+      for (let j = i + 1; j < order.length; j++) {
+        const pa = _pts[order[i]], pb = _pts[order[j]];
+        const dist = Math.hypot(pa.x-pb.x, pa.y-pb.y);
+        if (dist < 120) {
+          const va = (pa.z+1)/2, vb = (pb.z+1)/2;
+          const alpha = (1-dist/120) * 0.15 * va * vb;
+          ctx.strokeStyle = `rgba(200,200,255,${alpha})`;
+          ctx.beginPath(); ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();
+        }
       }
     }
+
+    order.forEach(i => {
+      const kw = KEYWORDS[i], p = _pts[i];
+      const vis  = (p.z + 1) / 2;
+      const fs   = Math.round((kw.w * 4 + 8) * p.d * zoom);
+      const alpha = 0.25 + 0.75 * vis;
+      const isHov = (i === hoverIdx);
+      ctx.save();
+      ctx.font = `bold ${fs}px 'Segoe UI', sans-serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.globalAlpha = alpha;
+      if (isHov || vis > 0.65) { ctx.shadowColor = kw.c; ctx.shadowBlur = isHov ? 22 : 12; }
+      ctx.fillStyle = kw.c;
+      ctx.fillText(kw.t, p.x, p.y);
+      if (isHov) {
+        ctx.shadowBlur = 0;
+        ctx.font = `10px 'Segoe UI', sans-serif`;
+        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.globalAlpha = 1;
+        const badge = kw.type === 'weak' ? '⚠ 취약' : '✓ 강점';
+        ctx.fillText(badge, p.x, p.y + fs/2 + 10);
+      }
+      ctx.restore();
+    });
+
+    requestAnimationFrame(frame);
   }
+  frame();
 
-  // 키워드 렌더
-  order.forEach(i => {
-    const kw = KEYWORDS[i], p = _pts[i];
-    const vis  = (p.z + 1) / 2;
-    const fs   = Math.round((kw.w * 4 + 8) * p.d * zoom);
-    const alpha = 0.25 + 0.75 * vis;
-    const isHov = (i === hoverIdx);
-
-    ctx.save();
-    ctx.font = `bold ${fs}px 'Segoe UI', sans-serif`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.globalAlpha = alpha;
-
-    if (isHov || vis > 0.65) {
-      ctx.shadowColor = kw.c; ctx.shadowBlur = isHov ? 22 : 12;
+  canvas.addEventListener('mousedown', e => { dragging = true; lastMX = e.clientX; lastMY = e.clientY; });
+  window.addEventListener('mouseup', () => { dragging = false; });
+  window.addEventListener('mousemove', e => {
+    if (dragging) {
+      angleY += (e.clientX - lastMX) * 0.012;
+      rotX   += (e.clientY - lastMY) * 0.012;
+      lastMX = e.clientX; lastMY = e.clientY;
+      return;
     }
-    ctx.fillStyle = kw.c;
-    ctx.fillText(kw.t, p.x, p.y);
-
-    if (isHov) {
-      ctx.shadowBlur = 0;
-      ctx.font = `10px 'Segoe UI', sans-serif`;
-      ctx.fillStyle = 'rgba(255,255,255,0.75)';
-      ctx.globalAlpha = 1;
-      const badge = kw.type === 'weak' ? '⚠ 취약' : '✓ 강점';
-      ctx.fillText(badge, p.x, p.y + fs/2 + 10);
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    let found = -1, minD = Infinity;
+    _pts.forEach((p, i) => {
+      const fs = Math.round((KEYWORDS[i].w*4+8) * p.d * zoom);
+      const d = Math.hypot(p.x - mx, p.y - my);
+      if (d < fs + 4 && d < minD) { minD = d; found = i; }
+    });
+    hoverIdx = found; paused = (found >= 0);
+    canvas.style.cursor = found >= 0 ? 'pointer' : 'grab';
+    const tt = document.getElementById('tooltip');
+    if (found >= 0) {
+      const kw = KEYWORDS[found];
+      const isWeak = kw.type === 'weak';
+      const badge = isWeak
+        ? `<b style="color:#ff2d55">⚠ 취약 키워드</b> &nbsp; 오답 ${kw.mistakes}회`
+        : `<b style="color:#2ed573">✓ 강점 키워드</b> &nbsp; 정답 ${kw.correct}회`;
+      tt.innerHTML = `
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">${kw.t}</div>
+        <div>${badge}</div>
+        <div style="color:#aaa;margin-top:2px">단원: ${kw.unit}</div>
+        <div style="color:#888;margin-top:4px;font-size:11px">💡 ${kw.tip}</div>
+        <div style="color:#555;margin-top:6px;font-size:10px">🔗 클릭하면 문제 페이지로 이동</div>`;
+      tt.style.display = 'block';
+      tt.style.left = (e.clientX + 14) + 'px';
+      tt.style.top  = (e.clientY - 10) + 'px';
+    } else {
+      tt.style.display = 'none';
     }
-    ctx.restore();
   });
-
-  requestAnimationFrame(frame);
+  canvas.addEventListener('click', () => {
+    if (hoverIdx >= 0) window.open(KEYWORDS[hoverIdx].url, '_blank');
+  });
+  canvas.addEventListener('wheel', e => {
+    zoom = Math.max(0.5, Math.min(2.2, zoom - e.deltaY * 0.001));
+    e.preventDefault();
+  }, { passive: false });
 }
-frame();
 
-// ─── 마우스 컨트롤 ─────────────────────────────────────────────
-canvas.addEventListener('mousedown', e => {
-  dragging = true; lastMX = e.clientX; lastMY = e.clientY;
-});
-window.addEventListener('mouseup', () => { dragging = false; });
-window.addEventListener('mousemove', e => {
-  if (dragging) {
-    angleY += (e.clientX - lastMX) * 0.012;
-    rotX   += (e.clientY - lastMY) * 0.012;
-    lastMX = e.clientX; lastMY = e.clientY;
-    return;
-  }
-  const rect = canvas.getBoundingClientRect();
-  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-  let found = -1, minD = Infinity;
-  _pts.forEach((p, i) => {
-    const fs = Math.round((KEYWORDS[i].w*4+8) * p.d * zoom);
-    const d = Math.hypot(p.x - mx, p.y - my);
-    if (d < fs + 4 && d < minD) { minD = d; found = i; }
-  });
-  hoverIdx = found; paused = (found >= 0);
-  canvas.style.cursor = found >= 0 ? 'pointer' : 'grab';
-
-  const tt = document.getElementById('tooltip');
-  if (found >= 0) {
-    const kw = KEYWORDS[found];
-    const isWeak = kw.type === 'weak';
-    const badge = isWeak
-      ? `<b style="color:#ff2d55">⚠ 취약 키워드</b> &nbsp; 오답 ${kw.mistakes}회`
-      : `<b style="color:#2ed573">✓ 강점 키워드</b> &nbsp; 정답 ${kw.correct}회`;
-    tt.innerHTML = `
-      <div style="font-size:14px;font-weight:700;margin-bottom:4px">${kw.t}</div>
-      <div>${badge}</div>
-      <div style="color:#aaa;margin-top:2px">단원: ${kw.unit}</div>
-      <div style="color:#888;margin-top:4px;font-size:11px">💡 ${kw.tip}</div>
-      <div style="color:#555;margin-top:6px;font-size:10px">🔗 클릭하면 문제 페이지로 이동</div>`;
-    tt.style.display = 'block';
-    tt.style.left = (e.clientX + 14) + 'px';
-    tt.style.top  = (e.clientY - 10) + 'px';
-  } else {
-    tt.style.display = 'none';
-  }
-});
-canvas.addEventListener('click', () => {
-  if (hoverIdx >= 0) window.open(KEYWORDS[hoverIdx].url, '_blank');
-});
-canvas.addEventListener('wheel', e => {
-  zoom = Math.max(0.5, Math.min(2.2, zoom - e.deltaY * 0.001));
-  e.preventDefault();
-}, { passive: false });
-
-// ─── 오답 빈도 차트 ────────────────────────────────────────────
-const weakKWs = KEYWORDS.filter(k => k.type === 'weak').sort((a,b) => b.mistakes - a.mistakes);
-const freqEl = document.getElementById('freq-chart');
-weakKWs.forEach(k => {
-  const pct = (k.mistakes / 3) * 100;
-  const clr = k.mistakes >= 3 ? '#ff2d55' : k.mistakes === 2 ? '#ff6b35' : '#ff9f0a';
-  freqEl.innerHTML += `
-    <div class="freq-item">
-      <div class="freq-label"><span>${k.t}</span><span style="color:${clr}">${k.mistakes}회</span></div>
-      <div class="freq-bar-bg"><div class="freq-bar-fill" style="width:0%;background:${clr}" data-w="${pct}"></div></div>
-    </div>`;
-});
-setTimeout(() => {
-  document.querySelectorAll('.freq-bar-fill').forEach(el => {
-    el.style.width = el.dataset.w + '%';
-  });
-}, 400);
-
-// ─── 도넛 차트 ────────────────────────────────────────────────
-const dc = document.getElementById('donut-canvas').getContext('2d');
-const donutData = [{v:0.57, c:'#a855f7'}, {v:0.43, c:'#06b6d4'}];
-let da = -Math.PI / 2;
-donutData.forEach(d => {
-  const end = da + d.v * Math.PI * 2;
-  dc.beginPath();
-  dc.arc(90, 90, 72, da, end);
-  dc.arc(90, 90, 48, end, da, true);
-  dc.closePath(); dc.fillStyle = d.c; dc.fill();
-  da = end;
-});
-dc.font = 'bold 20px Segoe UI'; dc.fillStyle = '#fff';
-dc.textAlign = 'center'; dc.textBaseline = 'middle';
-dc.fillText('2', 90, 84);
-dc.font = '11px Segoe UI'; dc.fillStyle = '#888';
-dc.fillText('단원', 90, 104);
-
-// ─── 우선 학습 목록 ────────────────────────────────────────────
-const topKWs = weakKWs.slice(0, 3);
-const rankColors = ['#ff2d55','#ff6b35','#ff9f0a'];
-const pl = document.getElementById('priority-list');
-topKWs.forEach((k, i) => {
-  const div = document.createElement('div');
-  div.className = 'priority-item';
-  div.style.borderColor = rankColors[i];
-  div.innerHTML = `
-    <div class="priority-rank" style="color:${rankColors[i]}">${i+1}</div>
-    <div class="priority-info">
-      <h4>${k.t}</h4>
-      <p>오답 ${k.mistakes}회 &middot; ${k.unit} &middot; ${k.tip}</p>
-    </div>`;
-  div.addEventListener('click', () => window.open(k.url, '_blank'));
-  pl.appendChild(div);
-});
-
-// ─── 점수 바 애니메이션 ───────────────────────────────────────
-setTimeout(() => {
-  document.getElementById('score-fill').style.width = '60%';
-}, 300);
+// ─── 시작 ─────────────────────────────────────────────────────
+loadData();
 </script>
 </body>
 </html>
