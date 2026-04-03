@@ -108,7 +108,7 @@ def build_json(rows):
 
     return {
         "meta": {
-            "title": "수학 키워드 데이터 마이닝",
+            "title": "수학 키워드",
             "score": score,
             "total": total_questions,
             "correct": total_correct,
