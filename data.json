@@ -4,7 +4,7 @@
     "score": 0,
     "total": 0,
     "correct": 0,
-    "updatedAt": "2026-04-04T05:26:35.571260+09:00"
+    "updatedAt": "2026-04-04T05:36:27.106923+09:00"
   },
   "notionLinks": {
     "mainPage": "https://www.notion.so/YOUR_MAIN_PAGE_ID",
@@ -20,7 +20,7 @@
       "c": "#ffcc00",
       "link": "weakness",
       "unit": "정수",
-      "tip": "부호 조심",
+      "tip": "",
       "mistakes": 0
     },
     {
@@ -30,7 +30,7 @@
       "c": "#ffcc00",
       "link": "weakness",
       "unit": "정수",
-      "tip": "양의 거리",
+      "tip": "",
       "mistakes": 0
     },
     {
@@ -40,7 +40,7 @@
       "c": "#2ed573",
       "link": "problems",
       "unit": "분수",
-      "tip": "#2ed573",
+      "tip": "",
       "correct": 0
     },
     {
@@ -50,7 +50,7 @@
       "c": "#ff2d55",
       "link": "weakness",
       "unit": "소인수분해",
-      "tip": "공통된 배수를 찾는 것이 핵심",
+      "tip": "",
       "mistakes": 0
     },
     {
@@ -60,7 +60,7 @@
       "c": "#2ed573",
       "link": "problems",
       "unit": "정수",
-      "tip": "#2ed573",
+      "tip": "",
       "correct": 0
     },
     {
@@ -70,7 +70,7 @@
       "c": "#ffcc00",
       "link": "weakness",
       "unit": "소인수분해",
-      "tip": "weak",
+      "tip": "",
       "mistakes": 0
     },
     {
@@ -80,7 +80,7 @@
       "c": "#ff2d55",
       "link": "weakness",
       "unit": "소인수분해",
-      "tip": "공통된 약수를 찾는 것이 핵심",
+      "tip": "",
       "mistakes": 0
     },
     {
