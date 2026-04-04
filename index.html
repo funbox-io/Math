@@ -249,8 +249,8 @@ async function loadData() {
 // ─── 렌더 함수들 ────────────────────────────────────────────
 function renderAll(data) {
   const { meta } = data;
-  const weakKWs   = KEYWORDS.filter(k => k.type === 'weak');
-  const strongKWs = KEYWORDS.filter(k => k.type === 'strong');
+  const weakKWs   = KEYWORDS.filter(k => k.type === 'red');
+  const strongKWs = KEYWORDS.filter(k => k.type === 'green');
   const units = [...new Set(KEYWORDS.map(k => k.unit))];
 
   // 성적
