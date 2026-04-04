@@ -21,7 +21,7 @@
       "link": "weakness",
       "unit": "정수",
       "tip": "",
-      "mistakes": 0
+      "mistakes": 1
     },
     {
       "t": "절댓값",
