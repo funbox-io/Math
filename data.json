@@ -1,97 +1,45 @@
 {
   "meta": {
-    "title": "수학 키워드",
-    "score": 0,
-    "total": 0,
-    "correct": 0,
-    "updatedAt": "2026-04-04T05:36:27.106923+09:00"
+    "title": "수학 키워드 데이터 마이닝",
+    "updatedAt": "2026-04-05T00:00:00+09:00"
   },
   "notionLinks": {
-    "mainPage": "https://www.notion.so/YOUR_MAIN_PAGE_ID",
-    "problems": "https://www.notion.so/YOUR_PROBLEMS_PAGE_ID",
-    "weakness": "https://www.notion.so/YOUR_WEAKNESS_PAGE_ID",
-    "dataMining": "https://www.notion.so/YOUR_DATAMINING_PAGE_ID"
+    "mainPage":  "https://www.notion.so/2ffa79df73cf80aeb13af43ad18db636",
+    "problems":  "https://www.notion.so/335a79df73cf81c79ddcdfa7f6517d59",
+    "weakness":  "https://www.notion.so/335a79df73cf810898e6d126c3908dfd",
+    "dataMining":"https://www.notion.so/336a79df73cf8126872ecd82665192c4",
+    "db":        "https://www.notion.so/337a79df73cf807f9a9af6ba2db45d5c"
   },
-  "keywords": [
+  "dbRows": [
     {
-      "t": "음수 뺄셈",
-      "type": "weak",
-      "w": 3,
-      "c": "#ffcc00",
-      "link": "weakness",
-      "unit": "정수",
-      "tip": "",
-      "mistakes": 1
+      "Name":      "소인수분해",
+      "Type":      "weak",
+      "Unit":      ["소인수분해"],
+      "Mistakes":  7,
+      "Correct":   5,
+      "Weight":    12,
+      "Color":     "#ff2d55",
+      "avg_value": 41.7
     },
     {
-      "t": "절댓값",
-      "type": "weak",
-      "w": 3,
-      "c": "#ffcc00",
-      "link": "weakness",
-      "unit": "정수",
-      "tip": "",
-      "mistakes": 0
+      "Name":      "정수와 유리수",
+      "Type":      "yellow",
+      "Unit":      ["정수"],
+      "Mistakes":  5,
+      "Correct":   9,
+      "Weight":    14,
+      "Color":     "#ffd60a",
+      "avg_value": 64.3
     },
     {
-      "t": "통분",
-      "type": "strong",
-      "w": 3,
-      "c": "#2ed573",
-      "link": "problems",
-      "unit": "분수",
-      "tip": "",
-      "correct": 0
-    },
-    {
-      "t": "최소공배수 ",
-      "type": "weak",
-      "w": 3,
-      "c": "#ff2d55",
-      "link": "weakness",
-      "unit": "소인수분해",
-      "tip": "",
-      "mistakes": 0
-    },
-    {
-      "t": "정수 사칙연산",
-      "type": "strong",
-      "w": 4,
-      "c": "#2ed573",
-      "link": "problems",
-      "unit": "정수",
-      "tip": "",
-      "correct": 0
-    },
-    {
-      "t": "소인수분해",
-      "type": "weak",
-      "w": 2,
-      "c": "#ffcc00",
-      "link": "weakness",
-      "unit": "소인수분해",
-      "tip": "",
-      "mistakes": 0
-    },
-    {
-      "t": "최대공약수",
-      "type": "weak",
-      "w": 4,
-      "c": "#ff2d55",
-      "link": "weakness",
-      "unit": "소인수분해",
-      "tip": "",
-      "mistakes": 0
-    },
-    {
-      "t": "소인과 합성수",
-      "type": "weak",
-      "w": 3,
-      "c": "#ffcc00",
-      "link": "weakness",
-      "unit": "소인수분해",
-      "tip": "",
-      "mistakes": 0
+      "Name":      "문자와 식 · 일차방정식",
+      "Type":      "strong",
+      "Unit":      ["문자와 식", "일차방정식"],
+      "Mistakes":  1,
+      "Correct":   3,
+      "Weight":    4,
+      "Color":     "#2ed573",
+      "avg_value": 75.0
     }
   ]
 }
