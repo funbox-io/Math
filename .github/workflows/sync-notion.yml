@@ -1,29 +1,40 @@
-name: "Sync Notion to data.json"
+name: Sync Notion → data.json
+
 on:
+  # ① 매일 오전 9시 (KST = UTC+9 → 00:00 UTC)
   schedule:
-      - cron: '*/3 * * * *'
-        workflow_dispatch:
-        jobs:
-          sync:
-              runs-on: ubuntu-latest
-                  steps:
-                        - name: Checkout
-                                uses: actions/checkout@v4
-                                      - name: Set up Python
-                                              uses: actions/setup-python@v5
-                                                      with:
-                                                                python-version: '3.11'
-                                                                      - name: Install dependencies
-                                                                              run: pip install requests
-                                                                                    - name: Fetch Notion data and write data.json
-                                                                                            env:
-                                                                                                      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-                                                                                                                NOTION_DB_ID: ${{ secrets.NOTION_DB_ID }}
-                                                                                                                        run: python sync_notion.py
-                                                                                                                              - name: Commit and push if changed
-                                                                                                                                      run: |
-                                                                                                                                                git config user.name "github-actions[bot]"
-                                                                                                                                                          git config user.email "github-actions[bot]@users.noreply.github.com"
-                                                                                                                                                                    git add data.json
-                                                                                                                                                                              git diff --staged --quiet || git commit -m "chore: sync data.json from Notion [$(date '+%Y-%m-%d %H:%M')]"
-                                                                                                                                                                                        git push
+    - cron: '*/3 * * * *'
+
+  # ② GitHub에서 수동 실행 버튼
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch Notion data & write data.json
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          # ▼ 노션에서 DB ID 확인: notion.so/{workspace}/{DB_ID}?v=...
+          NOTION_DB_ID: ${{ secrets.NOTION_DB_ID }}
+        run: python sync_notion.py
+
+      - name: Commit & push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "chore: sync data.json from Notion [$(date '+%Y-%m-%d %H:%M')]"
+          git push
