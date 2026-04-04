@@ -1,4 +1,4 @@
-name: Sync Notion -> data.json
+name: "Sync Notion to data.json"
 on:
   schedule:
       - cron: '*/3 * * * *'
@@ -15,12 +15,12 @@ on:
                                                                 python-version: '3.11'
                                                                       - name: Install dependencies
                                                                               run: pip install requests
-                                                                                    - name: Fetch Notion data & write data.json
+                                                                                    - name: Fetch Notion data and write data.json
                                                                                             env:
                                                                                                       NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
                                                                                                                 NOTION_DB_ID: ${{ secrets.NOTION_DB_ID }}
                                                                                                                         run: python sync_notion.py
-                                                                                                                              - name: Commit & push if changed
+                                                                                                                              - name: Commit and push if changed
                                                                                                                                       run: |
                                                                                                                                                 git config user.name "github-actions[bot]"
                                                                                                                                                           git config user.email "github-actions[bot]@users.noreply.github.com"
