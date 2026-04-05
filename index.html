@@ -576,7 +576,7 @@ function initSphere() {
     }
     return pts;
   }
-  const basePos = fibSphere(Math.max(KEYWORDS.length, 3));
+  const basePos = fibSphere(Math.max(KEYWORDS.length, 8));
 
   function rotY(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0]*c+p[2]*s, p[1], -p[0]*s+p[2]*c]; }
   function rotX2(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0], p[1]*c-p[2]*s, p[1]*s+p[2]*c]; }
@@ -598,7 +598,7 @@ function initSphere() {
 
     if (!paused) { angleY += autoSpeed; }
 
-    _pts = basePos.slice(0, KEYWORDS.length).map(p => {
+    _pts = KEYWORDS.map((_, i) => { const p = basePos[i % basePos.length];
       let q = rotY(p, angleY);
       q = rotX2(q, rotX);
       return project(q);
