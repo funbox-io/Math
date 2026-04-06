@@ -598,7 +598,7 @@ function initSphere() {
 
     if (!paused) { angleY += autoSpeed; }
 
-    _pts = KEYWORDS.map((_, i) => { const p = basePos[i % basePos.length];
+    _pts = KEYWORDS.map((_, i) => { const p = basePos[(i + 1) % basePos.length];
       let q = rotY(p, angleY);
       q = rotX2(q, rotX);
       return project(q);
